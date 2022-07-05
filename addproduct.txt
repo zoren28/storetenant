@@ -1,0 +1,44 @@
+async addProduct({ productId, ticket_id, icoos, pickup_at, mop }) {
+			this.modalMode = 'Add'
+			const { data } = await axios.get(`/product/${productId}`)
+			this.foodProductDetails = data
+			this.$set(this.addItemOrderForm, 'ticket_id', ticket_id)
+			this.$set(this.addItemOrderForm, 'icoos', icoos)
+			this.$set(this.addItemOrderForm, 'pickup_at', pickup_at)
+			this.$set(this.addItemOrderForm, 'mop', mop)
+			this.$set(this.foodProductDetails, 'quantity', 0)
+			$('#foodProductDetail').modal('show')
+		},
+
+
+addItem(ticket, order) {
+			let productIds = [],
+				cancelled_status = []
+
+			for (let index = 0; index < order.length; index++) {
+				productIds.push(order[index].product_id)
+				cancelled_status.push(order[index].canceled_status)
+			}
+
+			this.orderDetails = [
+				{
+					ticket: ticket,
+					productIds: productIds,
+					cancelled_status: cancelled_status,
+					mop: order[0].mop,
+					icoos: order[0].icoos,
+					pickup_at: order[0].pickup_at
+				}
+			]
+
+			$('div#add-order').modal({
+				backdrop: 'static',
+				keyboard: false,
+				show: true
+			})
+		},
+
+
+
+
+<add-order :orderDetails="orderDetails" @return-home="returnHome" @addProduct="addProduct" />
